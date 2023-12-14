@@ -42,12 +42,12 @@ class DictEntry:
         if self.cnPinyin and self.cnPinyin != self.twPinyin:
             cnPinyinIndex = xml.SubElement(entry, 'd:index')
             cnPinyinIndex.set('d:value', self.cnPinyin)
-        # display headword
+        # display headword and pronounciations
         titleDiv = xml.SubElement(entry, 'div')
         titleText = xml.SubElement(titleDiv, 'h1')
+        titleText.set('class', 'headword')
         titleText.text = self.titleTrad
-        # display pronounciations
-        pronSpan = xml.SubElement(entry, 'span')
+        pronSpan = xml.SubElement(titleDiv, 'span')
         pronSpan.set('class', 'syntax')
         for pronLabel,pronValue in [('TW_ZY',self.twZhuyin),
                                     ('TW_PY',self.twPinyin),
@@ -61,8 +61,12 @@ class DictEntry:
         defsDiv = xml.SubElement(entry, 'div')
         defsList = xml.SubElement(defsDiv, 'ol')
         for definition in self.defs:
-            defsItem = xml.SubElement(defsList, 'li')
-            defsItem.text = definition
+            # the definition text may contain html markup, try to preserve it by parsing
+            try:
+                defsList.append(xml.fromstring('<li>'+definition+'</li>'))
+            except xml.ParseError as e:
+                print("Warning: could not parse definition as XML: " + definition)
+                xml.SubElement(defsList, 'li').text = definition
         return entry
 
 class DictCsvParser:
@@ -89,6 +93,14 @@ class DictCsvParser:
             self.fieldIndices[fieldName] = columnNames.index(columnName)
         self.xmlRoot = xml.Element('d:dictionary', xmlns='http://www.w3.org/1999/xhtml')
         self.xmlRoot.set('xmlns:d', 'http://www.apple.com/DTDs/DictionaryService-1.0.rng')
+    def formatDef(self, defText: str) -> str:
+        # remove leading numbers (html <ol> will provide this)
+        m = re.match(r'[0-9]+\. *(.*)', defText)
+        if m:
+            defText = m[1]
+        # add newline before examples
+        defText = defText.replace('[例]', '\n[例]')
+        return defText
     def parseRow(self, csvRow: str) -> DictEntry:
         fieldValues = {}
         # defs require special processing due to being a variable-length list
@@ -100,12 +112,7 @@ class DictCsvParser:
         for index in range(self.fieldIndices['defsStart'], len(csvRow)):
             if csvRow[index] == '':
                 break
-            defStr = csvRow[index]
-            # remove leading numbers (html <ol> will provide this)
-            m = re.match(r'[0-9]+\. *(.*)', defStr)
-            if m:
-                defStr = m[1]
-            defs.append(defStr)
+            defs.append(self.formatDef(csvRow[index]))
         fieldValues['defs'] = defs
         return DictEntry(**fieldValues)
     def parse(self):
