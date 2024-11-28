@@ -5,7 +5,7 @@ These are user dictionaries for Dictionary.app that add the Taiwan MOE Cross-Str
 ## Credits
 This repository is based on the Apple Dictionary Development Kit.
 
-The Cross-Straits dictionary is based on the CSV data from MOE: https://github.com/g0v/moedict-data-csld/blob/master/兩岸詞典.csv
+The Cross-Straits dictionary is based on the CSV data from moedict-data-csld: https://github.com/g0v/moedict-data-csld/blob/master/兩岸詞典.csv
 
 The Revised dictionary is based on the zipped XLSX data from MOE, converted to CSV: https://language.moe.gov.tw/001/Upload/Files/site_content/M0001/respub/index.html
 
