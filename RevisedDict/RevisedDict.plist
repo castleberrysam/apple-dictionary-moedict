@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>zh</string>
+	<key>CFBundleDisplayName</key>
+	<string>MOE Revised Dictionary</string>
+	<key>CFBundleIdentifier</key>
+	<string>xyz.castleberry.dictionary.RevisedDict</string>
+	<key>CFBundleName</key>
+	<string>MOE Revised Dictionary</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>DCSDictionaryCopyright</key>
+	<string>Copyright © 2015 Ministry of Education, Republic of China (Taiwan)</string>
+	<key>DCSDictionaryManufacturerName</key>
+	<string>Ministry of Education, Republic of China (Taiwan)</string>
+	<key>DCSDictionaryPrefsHTML</key>
+	<string>RevisedDictPrefs.html</string>
+	<key>DCSDictionaryXSL</key>
+	<string>RevisedDict.xsl</string>
+	<key>DCSDictionaryDefaultPrefs</key>
+	<dict>
+		<key>display-zhuyin</key>
+		<string>1</string>
+                <key>display-pinyin</key>
+                <string>1</string>
+		<key>version</key>
+		<string>1</string>
+	</dict>
+</dict>
+</plist>
