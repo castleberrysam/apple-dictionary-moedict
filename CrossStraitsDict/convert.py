@@ -68,16 +68,24 @@ class DictEntry:
             tocflLevelSpan.set('class', 'syntax')
             tocflLevelSpan.text = 'TOCFL-' + TOCFL_LEVELS[tocflList[self.titleTrad]-1]
         # display definitions
+        # the definition text may contain html markup, try to preserve it by parsing as XML
         defsDiv = xml.SubElement(entry, 'div')
-        defsList = xml.SubElement(defsDiv, 'ol')
-        for definition in self.defs:
-            # the definition text may contain html markup, try to preserve it by parsing
-            try:
-                defsList.append(xml.fromstring('<li>'+definition+'</li>'))
-            except xml.ParseError as e:
-                print("Warning: could not parse definition as XML: " + definition)
-                xml.SubElement(defsList, 'li').text = definition
+        if len(self.defs) > 1:
+            defsList = xml.SubElement(defsDiv, 'ol')
+            for definition in self.defs:
+                DictEntry.strToXML(defsList, 'li', definition)
+        else:
+            DictEntry.strToXML(defsDiv, 'p', self.defs[0])
         return entry
+    @staticmethod
+    def strToXML(parent: xml.Element, tag: str, text: str) -> xml.Element:
+        try:
+            return parent.append(xml.fromstring(f'<{tag}>{text}</{tag}>'))
+        except xml.ParseError as e:
+            print("Warning: could not parse text as XML: " + text)
+            element = xml.SubElement(parent, tag).text
+            element.text = text
+            return element
 
 class DictCsvParser:
     FIELD_NAMES = {
@@ -130,8 +138,15 @@ class DictCsvParser:
         m = re.match(r'[0-9]+\. *(.*)', defText)
         if m:
             defText = m[1]
-        # add newline before examples
-        defText = defText.replace('[例]', '\n[例]')
+        # add newline before and space after examples
+        defText = defText.replace('[例]', '\n[例] ')
+        # replace China/Taiwan indicator symbols with more intuitive ones
+        defText = defText.replace('★', '[陸] ')
+        defText = defText.replace('▲', '[臺] ')
+        # replace synonym marker with newline
+        defText = defText.replace('∥', '\n')
+        # replace narrow divider with fullwidth divider (used in examples)
+        defText = defText.replace('∣', '｜')
         return defText
     def parseRow(self, csvRow: str) -> DictEntry:
         fieldValues = {}

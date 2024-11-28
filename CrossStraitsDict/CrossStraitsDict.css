@@ -2,7 +2,7 @@
 @namespace d url(http://www.apple.com/DTDs/DictionaryService-1.0.rng);
 
 d|entry {
-    font-size: 12pt;
+    font-size: 14pt;
     font-family: 'PingFang TC', -apple-system;
     color: CanvasText;
 }
@@ -15,8 +15,13 @@ h1.headword {
 
 span.syntax {
     color: -apple-system-secondary-label;
+    margin-right: 0.5em;
 }
 
-li {
+p, li {
     white-space: pre-line;
+}
+
+li + li {
+    margin-top: 0.3em;
 }
